@@ -1,14 +1,13 @@
-//
-//  McdDeliveryApp.swift
-//  McdDelivery
-//
-//  Created by Mac on 2025-12-05.
-//
-
 import SwiftUI
+import Firebase
 
 @main
 struct McdDeliveryApp: App {
+
+    init() {
+        FirebaseApp.configure()
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
