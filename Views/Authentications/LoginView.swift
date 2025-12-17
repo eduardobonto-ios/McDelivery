@@ -23,19 +23,18 @@ struct LoginView: View {
 
                 Spacer().frame(height: 40)
 
-                Image(systemName: "lock.shield.fill")
-                    .font(.system(size: 60))
-                    .foregroundColor(.white)
-                    .scaleEffect(fadeIn ? 1.0 : 0.6)
-                    .opacity(fadeIn ? 1 : 0)
-                    .animation(.spring(response: 0.6, dampingFraction: 0.5).delay(0.1), value: fadeIn)
+                // IMAGE CAROUSEL HEADER
+                ImageCarouselView(
+                    images: [
+                        "banner1",
+                        "banner2",
+                        "banner3"
+                    ]
+                )
+                .opacity(fadeIn ? 1 : 0)
+                .offset(y: slideUp ? 0 : 20)
+                .animation(.easeOut(duration: 0.8), value: fadeIn)
 
-                Text("Welcome Back")
-                    .font(.largeTitle.bold())
-                    .foregroundColor(.white)
-                    .opacity(fadeIn ? 1 : 0)
-                    .offset(y: slideUp ? 0 : 20)
-                    .animation(.easeOut(duration: 0.8).delay(0.3), value: fadeIn)
 
                 VStack(spacing: 18) {
 
@@ -75,7 +74,7 @@ struct LoginView: View {
                         if authVM.isLoading {
                             ProgressView()
                         } else {
-                            Text("Sign In").bold()
+                            Text("Log In").bold()
                         }
                     }
                     .frame(maxWidth: .infinity)
@@ -108,12 +107,20 @@ struct LoginView: View {
                             }
                         }
                     } label: {
-                        Text("Sign up with Email")
-                            .frame(maxWidth: .infinity)
+                        HStack(spacing: 10) {
+                            Image(systemName: "envelope.fill")
+                                .foregroundColor(.red)
+
+                            Text("Sign up with Email")
+                                .foregroundColor(.white)
+                        }
+                        .frame(maxWidth: .infinity)
                     }
                     .padding()
                     .background(Color.gray.opacity(0.25))
                     .cornerRadius(12)
+
+
 
                     SignInWithAppleButton(.signIn) { _ in
                     } onCompletion: { _ in }
@@ -129,8 +136,8 @@ struct LoginView: View {
                             }
                         }
                     } label: {
-                        Text("Login as Guest")
-                            .foregroundColor(.white)
+                        Text("Order as guest")
+                            .foregroundColor(.red)
                     }
                 }
                 .padding(.horizontal, 30)

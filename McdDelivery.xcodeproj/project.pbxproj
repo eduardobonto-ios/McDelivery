@@ -18,6 +18,9 @@
 		04D91D0C2EEF0583002028AB /* SideMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D91D0B2EEF057D002028AB /* SideMenuItem.swift */; };
 		04D91D122EEF0683002028AB /* AppBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D91D112EEF067E002028AB /* AppBackground.swift */; };
 		04D91D142EEF0B59002028AB /* AppGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D91D132EEF0B55002028AB /* AppGradient.swift */; };
+		04EA08122EF0FF3800A929EE /* ImageCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04EA08112EF0FF3800A929EE /* ImageCarouselView.swift */; };
+		04EB4AD32EF2431500E2E07B /* RiveRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 04EB4AD22EF2431500E2E07B /* RiveRuntime */; };
+		04EB4ADD2EF2519100E2E07B /* SplineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04EB4ADC2EF2519100E2E07B /* SplineView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +34,8 @@
 		04D91D0B2EEF057D002028AB /* SideMenuItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuItem.swift; sourceTree = "<group>"; };
 		04D91D112EEF067E002028AB /* AppBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBackground.swift; sourceTree = "<group>"; };
 		04D91D132EEF0B55002028AB /* AppGradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGradient.swift; sourceTree = "<group>"; };
+		04EA08112EF0FF3800A929EE /* ImageCarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCarouselView.swift; sourceTree = "<group>"; };
+		04EB4ADC2EF2519100E2E07B /* SplineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplineView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -48,6 +53,7 @@
 			files = (
 				045637512EEFF47E003256A8 /* FirebaseCore in Frameworks */,
 				0456374F2EEFF47E003256A8 /* FirebaseAuth in Frameworks */,
+				04EB4AD32EF2431500E2E07B /* RiveRuntime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,9 +107,11 @@
 		045637852EF032E6003256A8 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				04EB4ADC2EF2519100E2E07B /* SplineView.swift */,
 				04B442C72EE31EDE0047528F /* SideMenu.swift */,
 				04D91D112EEF067E002028AB /* AppBackground.swift */,
 				04D91D132EEF0B55002028AB /* AppGradient.swift */,
+				04EA08112EF0FF3800A929EE /* ImageCarouselView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -173,6 +181,7 @@
 			packageProductDependencies = (
 				0456374E2EEFF47E003256A8 /* FirebaseAuth */,
 				045637502EEFF47E003256A8 /* FirebaseCore */,
+				04EB4AD22EF2431500E2E07B /* RiveRuntime */,
 			);
 			productName = McdDelivery;
 			productReference = 04B442B82EE2BE750047528F /* McdDelivery.app */;
@@ -204,6 +213,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				0456374D2EEFF47E003256A8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				04EB4AD12EF2431500E2E07B /* XCRemoteSwiftPackageReference "rive-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 04B442B92EE2BE750047528F /* Products */;
@@ -230,6 +240,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04EB4ADD2EF2519100E2E07B /* SplineView.swift in Sources */,
 				045637552EEFF64A003256A8 /* AuthViewModel.swift in Sources */,
 				045637532EEFF631003256A8 /* McdDeliveryApp.swift in Sources */,
 				0454DE222EEAC1D7002B5EA8 /* OnboardingView.swift in Sources */,
@@ -238,6 +249,7 @@
 				04D91D142EEF0B59002028AB /* AppGradient.swift in Sources */,
 				04D91D122EEF0683002028AB /* AppBackground.swift in Sources */,
 				0453CA1C2EEBE33A0020597D /* LoginView.swift in Sources */,
+				04EA08122EF0FF3800A929EE /* ImageCarouselView.swift in Sources */,
 				04B442BE2EE2BE750047528F /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -475,6 +487,14 @@
 				minimumVersion = 12.7.0;
 			};
 		};
+		04EB4AD12EF2431500E2E07B /* XCRemoteSwiftPackageReference "rive-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rive-app/rive-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.12.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -487,6 +507,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0456374D2EEFF47E003256A8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
+		};
+		04EB4AD22EF2431500E2E07B /* RiveRuntime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 04EB4AD12EF2431500E2E07B /* XCRemoteSwiftPackageReference "rive-ios" */;
+			productName = RiveRuntime;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

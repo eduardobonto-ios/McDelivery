@@ -1,10 +1,10 @@
 import SwiftUI
 import FirebaseAuth
 
+// MARK: - CONTENT VIEW
 struct ContentView: View {
 
     @StateObject private var authVM = AuthViewModel()
-
     @State private var showMenu = false
     @State private var selectedTab: Tab = .home
 
@@ -13,40 +13,64 @@ struct ContentView: View {
     }
 
     var body: some View {
-
         Group {
             if authVM.user == nil {
+
                 // LOGIN FLOW
                 LoginView {
-                    // Firebase already updated user internally
                     authVM.user = Auth.auth().currentUser
                 }
+
             } else {
+
                 // MAIN APP
                 ZStack {
 
-                    // MAIN CONTENT
                     NavigationStack {
                         VStack(spacing: 0) {
 
                             // TOP BAR
-                            HStack {
-                                Button {
-                                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                                        showMenu.toggle()
+                            VStack(spacing: 4) {
+
+                                HStack {
+                                    Button {
+                                        withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                                            showMenu.toggle()
+                                        }
+                                    } label: {
+                                        Image(systemName: "line.3.horizontal")
+                                            .font(.title2)
+                                            .foregroundColor(.black)
+                                            .padding()
                                     }
-                                } label: {
-                                    Image(systemName: "line.3.horizontal")
-                                        .font(.title2)
-                                        .padding()
+
+                                    Spacer()
                                 }
 
-                                Spacer()
+                                // Dynamic Caption based on selected tab
+                                Text(tabTitle(for: selectedTab))
+                                    .font(.title2)
+                                    .bold()
+                                    .foregroundColor(.black)
+                                    .padding(.horizontal)
+                                    .padding(.bottom, 8)
                             }
+                            .frame(maxWidth: .infinity)
+                            .background(
+                                LinearGradient(
+                                    colors: [Color.yellow.opacity(5), Color.orange.opacity(0.7)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+
 
                             // TAB CONTENT
-                            TabContentView(selectedTab: selectedTab)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            TabContentView(
+                                selectedTab: selectedTab,
+                                user: authVM.user
+                            )
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
 
                             // BOTTOM TAB BAR
                             TikTokTabBar(selectedTab: $selectedTab)
@@ -55,7 +79,7 @@ struct ContentView: View {
                     .disabled(showMenu)
                     .blur(radius: showMenu ? 6 : 0)
 
-                    // SIDE MENU OVERLAY
+                    // SIDE MENU
                     if showMenu {
                         HStack(spacing: 0) {
                             SideMenu(
@@ -71,7 +95,7 @@ struct ContentView: View {
                             Color.black.opacity(0.35)
                                 .ignoresSafeArea()
                                 .onTapGesture {
-                                    withAnimation(.spring()) {
+                                    withAnimation {
                                         showMenu = false
                                     }
                                 }
@@ -81,12 +105,22 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            // Sync Firebase session on launch
             authVM.user = Auth.auth().currentUser
         }
     }
 
-    // MARK: - Logout Logic
+    private func tabTitle(for tab: Tab) -> String {
+        switch tab {
+        case .home: return "Home"
+        case .discover: return "Menu"
+        case .create: return "Orders"
+        case .inbox: return "Coupons"
+        case .profile: return "More"
+        }
+    }
+
+    
+    // MARK: - LOGOUT
     private func handleLogout() {
         withAnimation {
             showMenu = false
@@ -97,97 +131,229 @@ struct ContentView: View {
 
 // MARK: - TAB CONTENT
 struct TabContentView: View {
+
     let selectedTab: ContentView.Tab
+    let user: User?
 
     var body: some View {
         switch selectedTab {
+
         case .home:
-            VStack(spacing: 12) {
-                Image(systemName: "house.fill")
-                    .font(.largeTitle)
-                Text("Home Tab")
+            ScrollView {
+                VStack(spacing: 16) {
+
+                    // IMAGE CAROUSEL
+                    ImageCarouselView(
+                        images: ["feature1", "feature2", "feature3"]
+                    )
+
+                    // WELCOME + MEAL SCROLL
+                    VStack(alignment: .leading, spacing: 14) {
+
+                        Text("Welcome Back, \(displayUsername(from: user))")
+                            .font(.title2)
+                            .bold()
+
+                        MealHorizontalScrollView(
+                            meals: [
+                                MealItem(image: "meal1", name: "Big Mac Meal", price: "₱189"),
+                                MealItem(image: "meal2", name: "McChicken Meal", price: "₱169"),
+                                MealItem(image: "meal3", name: "Fries + Drink", price: "₱99"),
+                                MealItem(image: "meal4", name: "McNuggets Meal", price: "₱199"),
+                                MealItem(image: "meal1", name: "McFlurry", price: "₱89")
+                            ]
+                        )
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+                }
+                .padding(.top)
             }
 
         case .discover:
-            VStack(spacing: 12) {
-                Image(systemName: "magnifyingglass")
-                    .font(.largeTitle)
-                Text("Discover Tab")
-            }
+            CenterPlaceholder(
+                icon: "takeoutbag.and.cup.and.straw.fill",
+                title: "Menu"
+            )
 
         case .create:
-            VStack(spacing: 12) {
-                Image(systemName: "plus.circle.fill")
-                    .font(.system(size: 50))
-                Text("Create Tab")
-            }
+            CenterPlaceholder(
+                icon: "doc.text.fill",
+                title: "Orders"
+            )
 
         case .inbox:
-            VStack(spacing: 12) {
-                Image(systemName: "envelope.fill")
-                    .font(.largeTitle)
-                Text("Inbox Tab")
-            }
+            CenterPlaceholder(
+                icon: "ticket.fill",
+                title: "Coupons"
+            )
 
         case .profile:
-            VStack(spacing: 12) {
-                Image(systemName: "person.crop.circle.fill")
-                    .font(.largeTitle)
-                Text("Profile Tab")
-            }
+            CenterPlaceholder(
+                icon: "ellipsis.circle",
+                title: "More"
+            )
         }
     }
 }
 
-// MARK: - TIKTOK STYLE TAB BAR
+// MARK: - BOTTOM TAB BAR
 struct TikTokTabBar: View {
+
     @Binding var selectedTab: ContentView.Tab
 
     var body: some View {
         HStack {
 
-            TabBarButton(icon: "house.fill", tab: .home, selectedTab: $selectedTab)
-            TabBarButton(icon: "magnifyingglass", tab: .discover, selectedTab: $selectedTab)
-
-            // CREATE BUTTON
-            Button {
-                selectedTab = .create
-            } label: {
-                ZStack {
-                    Circle()
-                        .foregroundColor(.blue)
-                        .frame(width: 50, height: 50)
-
-                    Image(systemName: "plus")
-                        .foregroundColor(.white)
-                        .font(.title)
-                }
+            CustomTabButton(tab: .home, selectedTab: $selectedTab, label: "Home") {
+                Image("mcdonalds_logo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 22, height: 22)
             }
-            .offset(y: -10)
 
-            TabBarButton(icon: "envelope.fill", tab: .inbox, selectedTab: $selectedTab)
-            TabBarButton(icon: "person.crop.circle.fill", tab: .profile, selectedTab: $selectedTab)
+            CustomTabButton(tab: .discover, selectedTab: $selectedTab, label: "Menu") {
+                Image(systemName: "takeoutbag.and.cup.and.straw.fill")
+            }
+
+            CustomTabButton(tab: .create, selectedTab: $selectedTab, label: "Orders") {
+                Image(systemName: "doc.text.fill")
+            }
+
+            CustomTabButton(tab: .inbox, selectedTab: $selectedTab, label: "Coupons") {
+                Image(systemName: "ticket.fill")
+            }
+
+            CustomTabButton(tab: .profile, selectedTab: $selectedTab, label: "More") {
+                Image(systemName: "ellipsis.circle")
+            }
         }
         .padding(.horizontal)
-        .padding(.vertical, 8)
+        .padding(.vertical, 10)
         .background(.ultraThinMaterial)
     }
 }
 
-// MARK: - TAB BAR BUTTON
-struct TabBarButton: View {
-    let icon: String
+// MARK: - TAB BUTTON
+struct CustomTabButton<Icon: View>: View {
+
     let tab: ContentView.Tab
     @Binding var selectedTab: ContentView.Tab
+    let label: String
+    let icon: Icon
+
+    init(
+        tab: ContentView.Tab,
+        selectedTab: Binding<ContentView.Tab>,
+        label: String,
+        @ViewBuilder icon: () -> Icon
+    ) {
+        self.tab = tab
+        self._selectedTab = selectedTab
+        self.label = label
+        self.icon = icon()
+    }
 
     var body: some View {
         Button {
             selectedTab = tab
         } label: {
-            Image(systemName: icon)
-                .font(.title2)
-                .foregroundColor(selectedTab == tab ? .primary : .gray)
-                .frame(maxWidth: .infinity)
+            VStack(spacing: 4) {
+                icon
+                    .font(.system(size: 20))
+                    .foregroundColor(selectedTab == tab ? .red : .gray)
+
+                Text(label)
+                    .font(.caption2)
+                    .foregroundColor(selectedTab == tab ? .red : .gray)
+            }
+            .frame(maxWidth: .infinity)
         }
     }
 }
+
+// MARK: - PLACEHOLDER
+struct CenterPlaceholder: View {
+
+    let icon: String
+    let title: String
+
+    var body: some View {
+        VStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.largeTitle)
+            Text(title)
+        }
+    }
+}
+
+
+
+// MARK: - USERNAME HELPER
+private func displayUsername(from user: User?) -> String {
+    if let name = user?.displayName, !name.isEmpty {
+        return name
+    }
+    if let email = user?.email {
+        return email.components(separatedBy: "@").first ?? "User"
+    }
+    return "Guest"
+}
+
+// MARK: - MEAL MODELS
+struct MealItem: Identifiable {
+    let id = UUID()
+    let image: String
+    let name: String
+    let price: String
+}
+
+// MARK: - UPDATED MEAL HORIZONTAL SCROLL
+struct MealHorizontalScrollView: View {
+
+    let meals: [MealItem]
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 16) {
+
+                ForEach(meals) { meal in
+                    VStack(spacing: 8) {
+
+                        ZStack(alignment: .top) {
+                            // LIGHT GRAY VERTICAL BACKGROUND
+                            RoundedRectangle(cornerRadius: 18)
+                                .fill(Color.gray.opacity(0.12))
+                                .frame(width: 150, height: 160 + 40) // add space for text
+
+                            VStack(spacing: 8) {
+                                // MEAL IMAGE
+                                Image(meal.image)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 130, height: 110)
+                                    .padding(.top, 12)
+
+                                // MEAL NAME
+                                Text(meal.name)
+                                    .font(.caption)
+                                    .fontWeight(.semibold)
+                                    .lineLimit(1)
+
+                                // PRICE
+                                Text(meal.price)
+                                    .font(.caption)
+                                    .bold()
+                                    .foregroundColor(.red)
+                            }
+                            .padding(.bottom, 12)
+                        }
+                        .frame(width: 150)
+                    }
+                }
+            }
+            .padding(.horizontal)
+        }
+    }
+}
+

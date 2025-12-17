@@ -10,8 +10,8 @@ import SwiftUI
 struct AppGradient {
     static let primary = LinearGradient(
         colors: [
-            Color.blue.opacity(0.8),
-            Color.purple.opacity(0.8)
+            Color.yellow.opacity(10),
+            Color.white.opacity(0.8)
         ],
         startPoint: .topLeading,
         endPoint: .bottomTrailing
